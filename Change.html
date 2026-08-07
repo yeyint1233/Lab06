@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculate Change</title>
+
+    <script>
+
+        function calculateChange()
+        {
+            var change = document.getElementById("change").value;
+
+            // Validation
+            if(change == "" || isNaN(change))
+            {
+                alert("Please enter an amount.");
+                document.getElementById("change").focus();
+                return;
+            }
+
+            change = parseInt(change);
+
+            if(change < 0)
+            {
+                alert("Amount cannot be negative.");
+                document.getElementById("change").focus();
+                return;
+            }
+
+            var n1000 = 0;
+            var n500 = 0;
+            var n100 = 0;
+            var n50 = 0;
+            var n20 = 0;
+            var n10 = 0;
+            var n5 = 0;
+            var n2 = 0;
+            var n1 = 0;
+
+            while(change > 0)
+            {
+                if(change >= 1000)
+                {
+                    n1000++;
+                    change -= 1000;
+                }
+                else if(change >= 500)
+                {
+                    n500++;
+                    change -= 500;
+                }
+                else if(change >= 100)
+                {
+                    n100++;
+                    change -= 100;
+                }
+                else if(change >= 50)
+                {
+                    n50++;
+                    change -= 50;
+                }
+                else if(change >= 20)
+                {
+                    n20++;
+                    change -= 20;
+                }
+                else if(change >= 10)
+                {
+                    n10++;
+                    change -= 10;
+                }
+                else if(change >= 5)
+                {
+                    n5++;
+                    change -= 5;
+                }
+                else if(change >= 2)
+                {
+                    n2++;
+                    change -= 2;
+                }
+                else
+                {
+                    n1++;
+                    change -= 1;
+                }
+            }
+
+            document.getElementById("result").innerHTML =
+                n1000 + " of $1000 note<br>" +
+                n500 + " of $500 note<br>" +
+                n100 + " of $100 note<br>" +
+                n50 + " of $50 note<br>" +
+                n20 + " of $20 note<br>" +
+                n10 + " of $10 coin<br>" +
+                n5 + " of $5 coin<br>" +
+                n2 + " of $2 coin<br>" +
+                n1 + " of $1 coin";
+        }
+
+        function goBack()
+        {
+            history.back();
+        }
+
+    </script>
+
+</head>
+
+<body>
+
+<h2>Calculate Change</h2>
+
+<label>Enter Amount:</label>
+
+<br><br>
+
+<input type="number" id="change">
+
+<br><br>
+
+<button onclick="calculateChange()">Submit</button>
+
+<button onclick="goBack()">Back</button>
+
+<br><br>
+
+<p id="result"></p>
+
+</body>
+</html>

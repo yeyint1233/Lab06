@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Distance from KBU</title>
+
+<!-- Leaflet Map CSS -->
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+
+.header {
+    background-color: #087ff5;
+    color: white;
+    text-align: center;
+    padding: 25px;
+}
+
+.container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 30px auto;
+    background-color: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+h2 {
+    color: #087ff5;
+    text-align: center;
+}
+
+.instructions {
+    text-align: center;
+    font-size: 17px;
+    margin-bottom: 20px;
+}
+
+#map {
+    height: 500px;
+    width: 100%;
+    border-radius: 10px;
+    border: 2px solid #ddd;
+}
+
+.result {
+    text-align: center;
+    margin-top: 25px;
+    padding: 15px;
+    background-color: #f0f7ff;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #087ff5;
+}
+
+.button-area {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.button-area a {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: #333;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.button-area a:hover {
+    background-color: #555;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Distance Calculator</h1>
+    <p>Kasem Bundit University Romklao Campus</p>
+</div>
+
+<div class="container">
+
+    <h2>Distance from KBU</h2>
+
+    <p class="instructions">
+        📍 KBU is marked on the map.
+        Click anywhere on the map to select another location.
+    </p>
+
+    <div id="map"></div>
+
+    <div class="result" id="result">
+        Click on the map to calculate the distance.
+    </div>
+
+    <div class="button-area">
+        <a href="index.html">Back to Resume</a>
+    </div>
+
+</div>
+
+<!-- Leaflet Map JavaScript -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+
+// ================================
+// KBU ROMKLAO CAMPUS LOCATION
+// ================================
+
+var kbuLat = 13.80265;
+var kbuLng = 100.73699;
+
+
+// ================================
+// CREATE MAP
+// ================================
+
+var map = L.map('map').setView([kbuLat, kbuLng], 15);
+
+
+// ================================
+// OPENSTREETMAP MAP
+// ================================
+
+L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+    }
+).addTo(map);
+
+
+// ================================
+// KBU MARKER
+// ================================
+
+var kbuMarker = L.marker([kbuLat, kbuLng])
+    .addTo(map)
+    .bindPopup(
+        "<b>Kasem Bundit University</b><br>" +
+        "Romklao Campus<br>" +
+        "60 Rom Klao Road, Min Buri, Bangkok"
+    )
+    .openPopup();
+
+
+// ================================
+// DISTANCE CALCULATION
+// ================================
+
+function calculateDistance(lat1, lon1, lat2, lon2)
+{
+    var R = 6371;
+
+    var dLat = (lat2 - lat1) * Math.PI / 180;
+    var dLon = (lon2 - lon1) * Math.PI / 180;
+
+    var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) *
+        Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    var c = 2 * Math.atan2(
+        Math.sqrt(a),
+        Math.sqrt(1 - a)
+    );
+
+    return R * c;
+}
+
+
+// ================================
+// CLICK MAP
+// ================================
+
+var selectedMarker = null;
+
+map.on('click', function(e)
+{
+
+    var selectedLat = e.latlng.lat;
+    var selectedLng = e.latlng.lng;
+
+
+    // Calculate distance
+
+    var distance = calculateDistance(
+        kbuLat,
+        kbuLng,
+        selectedLat,
+        selectedLng
+    );
+
+
+    // Remove previous marker
+
+    if(selectedMarker !== null)
+    {
+        map.removeLayer(selectedMarker);
+    }
+
+
+    // Create new marker
+
+    selectedMarker = L.marker(
+        [selectedLat, selectedLng]
+    )
+    .addTo(map)
+    .bindPopup(
+        "<b>Selected Location</b><br>" +
+        "Latitude: " + selectedLat.toFixed(5) +
+        "<br>" +
+        "Longitude: " + selectedLng.toFixed(5) +
+        "<br>" +
+        "<b>Distance from KBU: " +
+        distance.toFixed(2) +
+        " km</b>"
+    )
+    .openPopup();
+
+
+    // Display result
+
+    document.getElementById("result").innerHTML =
+        "📍 Distance from KBU: " +
+        distance.toFixed(2) +
+        " km";
+
+});
+
+</script>
+
+</body>
+</html>
