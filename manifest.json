@@ -1,0 +1,23 @@
+{
+    "name": "Ye Yint Resume",
+    "short_name": "Ye Yint",
+    "description": "Ye Yint Information Technology Resume and HTML Projects",
+    "start_url": "./index.html",
+    "scope": "./",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#087ff5",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "./icons/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "./icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
