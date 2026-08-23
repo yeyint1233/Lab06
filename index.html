@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Ye Yint - Resume</title>
 
 <link rel="stylesheet" href="style.css">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#087ff5">
 
 </head>
 
@@ -20,6 +26,7 @@
     </p>
 </div>
 
+
 <div class="section">
     <h2>Profile</h2>
     <p>
@@ -30,6 +37,7 @@
     </p>
 </div>
 
+
 <div class="section">
     <h2>Education</h2>
     <p>
@@ -38,6 +46,7 @@
         Expected Graduation: 2028
     </p>
 </div>
+
 
 <div class="section">
     <h2>Skills</h2>
@@ -51,6 +60,7 @@
     </ul>
 </div>
 
+
 <div class="section">
     <h2>Languages</h2>
     <ul>
@@ -59,6 +69,7 @@
         <li>Thai (Basic)</li>
     </ul>
 </div>
+
 
 <div class="section">
     <h2>Projects</h2>
@@ -69,6 +80,7 @@
     </ul>
 </div>
 
+
 <div class="section">
     <h2>Experience</h2>
     <p>
@@ -76,6 +88,7 @@
         Information Technology and software development.
     </p>
 </div>
+
 
 <div class="section">
     <h2>Interests</h2>
@@ -87,15 +100,56 @@
     </ul>
 </div>
 
+
 <!-- Assignment Buttons -->
+
 <div class="page-buttons">
+
     <a href="hobby.html">Hobby</a>
+
     <a href="change.html">Change</a>
+
     <a href="distance.html">Distance</a>
+
     <a href="grading.html">Grading</a>
+
     <a href="converter.html">Converter</a>
+
 </div>
 
+
+<!-- Service Worker -->
+
+<script>
+
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener("load", function() {
+
+        navigator.serviceWorker.register("./service-worker.js")
+
+        .then(function() {
+
+            console.log("Service Worker registered successfully.");
+
+        })
+
+        .catch(function(error) {
+
+            console.log(
+                "Service Worker registration failed:",
+                error
+            );
+
+        });
+
+    });
+
+}
+
+</script>
+
+
 </body>
+
 </html>
-```
