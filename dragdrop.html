@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Drag & Drop</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+.drag-container {
+    text-align: center;
+    margin: 40px auto;
+    max-width: 800px;
+}
+
+#drag-image {
+    width: 150px;
+    cursor: grab;
+    margin: 20px;
+}
+
+.drop-box {
+    width: 300px;
+    height: 200px;
+    border: 3px dashed #087ff5;
+    margin: 30px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background-color: #f5f9ff;
+}
+
+.drop-box p {
+    color: #555;
+}
+
+.drag-area {
+    min-height: 200px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Drag & Drop</h1>
+    <p>Move the picture into and out of the box</p>
+</div>
+
+
+<div class="drag-container">
+
+    <h2>Drag the Picture</h2>
+
+    <!-- Picture -->
+    <div id="image-area" class="drag-area">
+
+        <img
+            id="drag-image"
+            src="https://www.w3schools.com/html/img_w3slogo.gif"
+            draggable="true"
+            alt="Draggable Picture"
+        >
+
+    </div>
+
+
+    <!-- Drop Box -->
+
+    <div
+        id="drop-box"
+        class="drop-box"
+        ondragover="allowDrop(event)"
+        ondrop="drop(event)"
+    >
+
+        <p>Drop Picture Here</p>
+
+    </div>
+
+
+    <!-- Back to Resume -->
+
+    <div class="button-area">
+
+        <a href="index.html">Back to Resume</a>
+
+    </div>
+
+</div>
+
+
+<script>
+
+// Allow the picture to be dropped
+function allowDrop(event)
+{
+    event.preventDefault();
+}
+
+
+// When dragging starts
+document.getElementById("drag-image").addEventListener(
+    "dragstart",
+    function(event)
+    {
+        event.dataTransfer.setData(
+            "text",
+            event.target.id
+        );
+    }
+);
+
+
+// When the picture is dropped
+function drop(event)
+{
+    event.preventDefault();
+
+    var imageId = event.dataTransfer.getData("text");
+
+    var image = document.getElementById(imageId);
+
+    event.currentTarget.appendChild(image);
+}
+
+
+// Allow dragging the picture OUT of the box
+document.getElementById("image-area").addEventListener(
+    "dragover",
+    function(event)
+    {
+        event.preventDefault();
+    }
+);
+
+
+document.getElementById("image-area").addEventListener(
+    "drop",
+    function(event)
+    {
+        event.preventDefault();
+
+        var imageId = event.dataTransfer.getData("text");
+
+        var image = document.getElementById(imageId);
+
+        event.currentTarget.appendChild(image);
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
