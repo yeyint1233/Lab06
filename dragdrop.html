@@ -2,8 +2,11 @@
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>Drag & Drop</title>
 
@@ -17,41 +20,96 @@
     max-width: 800px;
 }
 
+#image-area {
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 #drag-image {
     width: 150px;
     cursor: grab;
+
+    /* Important for phone */
+    touch-action: none;
+
+    user-select: none;
+    -webkit-user-drag: none;
+
     margin: 20px;
 }
 
 .drop-box {
     width: 300px;
     height: 200px;
+
     border: 3px dashed #087ff5;
+
     margin: 30px auto;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     border-radius: 10px;
+
     background-color: #f5f9ff;
+
+    position: relative;
+
+    transition: background-color 0.2s;
 }
 
 .drop-box p {
     color: #555;
 }
 
-.drag-area {
-    min-height: 200px;
+.drop-box.highlight {
+    background-color: #dceeff;
+}
+
+.button-area {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.button-area a {
+    display: inline-block;
+
+    padding: 12px 25px;
+
+    background-color: #333;
+
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 8px;
+
+    font-weight: bold;
+}
+
+.button-area a:hover {
+    background-color: #555;
 }
 
 </style>
 
 </head>
 
+
 <body>
 
+
 <div class="header">
+
     <h1>Drag & Drop</h1>
-    <p>Move the picture into and out of the box</p>
+
+    <p>
+        Move the picture into and out of the box
+    </p>
+
 </div>
 
 
@@ -59,102 +117,284 @@
 
     <h2>Drag the Picture</h2>
 
-    <!-- Picture -->
-    <div id="image-area" class="drag-area">
+
+    <!-- IMAGE AREA -->
+
+    <div id="image-area">
 
         <img
             id="drag-image"
             src="https://www.w3schools.com/html/img_w3slogo.gif"
-            draggable="true"
             alt="Draggable Picture"
+            draggable="false"
         >
 
     </div>
 
 
-    <!-- Drop Box -->
+    <!-- DROP BOX -->
 
-    <div
-        id="drop-box"
-        class="drop-box"
-        ondragover="allowDrop(event)"
-        ondrop="drop(event)"
-    >
+    <div id="drop-box" class="drop-box">
 
         <p>Drop Picture Here</p>
 
     </div>
 
 
-    <!-- Back to Resume -->
+    <!-- BACK BUTTON -->
 
     <div class="button-area">
 
-        <a href="index.html">Back to Resume</a>
+        <a href="index.html">
+            Back to Resume
+        </a>
 
     </div>
 
 </div>
 
 
+
 <script>
 
-// Allow the picture to be dropped
-function allowDrop(event)
+
+// ======================================
+// GET ELEMENTS
+// ======================================
+
+var image = document.getElementById("drag-image");
+
+var imageArea = document.getElementById("image-area");
+
+var dropBox = document.getElementById("drop-box");
+
+
+// ======================================
+// VARIABLES
+// ======================================
+
+var dragging = false;
+
+var offsetX = 0;
+
+var offsetY = 0;
+
+var originalParent = null;
+
+var originalNextSibling = null;
+
+
+// ======================================
+// START TOUCH / MOUSE
+// ======================================
+
+image.addEventListener("pointerdown", function(event)
 {
+
     event.preventDefault();
+
+    dragging = true;
+
+
+    // Remember where the image originally belongs
+
+    originalParent = image.parentElement;
+
+    originalNextSibling = image.nextSibling;
+
+
+    // Get image position
+
+    var rect = image.getBoundingClientRect();
+
+
+    offsetX = event.clientX - rect.left;
+
+    offsetY = event.clientY - rect.top;
+
+
+    // Make image follow finger/mouse
+
+    image.style.position = "fixed";
+
+    image.style.zIndex = "1000";
+
+    image.style.width = "150px";
+
+    image.style.left =
+        (event.clientX - offsetX) + "px";
+
+    image.style.top =
+        (event.clientY - offsetY) + "px";
+
+
+    // Capture pointer
+
+    image.setPointerCapture(event.pointerId);
+
+});
+
+
+// ======================================
+// MOVE IMAGE
+// ======================================
+
+image.addEventListener("pointermove", function(event)
+{
+
+    if (!dragging)
+    {
+        return;
+    }
+
+
+    event.preventDefault();
+
+
+    image.style.left =
+        (event.clientX - offsetX) + "px";
+
+    image.style.top =
+        (event.clientY - offsetY) + "px";
+
+
+    // Check if image is over the box
+
+    var boxRect =
+        dropBox.getBoundingClientRect();
+
+
+    if (
+        event.clientX >= boxRect.left &&
+        event.clientX <= boxRect.right &&
+        event.clientY >= boxRect.top &&
+        event.clientY <= boxRect.bottom
+    )
+    {
+
+        dropBox.classList.add("highlight");
+
+    }
+    else
+    {
+
+        dropBox.classList.remove("highlight");
+
+    }
+
+});
+
+
+// ======================================
+// RELEASE IMAGE
+// ======================================
+
+image.addEventListener("pointerup", function(event)
+{
+
+    if (!dragging)
+    {
+        return;
+    }
+
+
+    dragging = false;
+
+
+    dropBox.classList.remove("highlight");
+
+
+    // Check where the finger released
+
+    var boxRect =
+        dropBox.getBoundingClientRect();
+
+
+    var insideBox =
+        event.clientX >= boxRect.left &&
+        event.clientX <= boxRect.right &&
+        event.clientY >= boxRect.top &&
+        event.clientY <= boxRect.bottom;
+
+
+    // ==================================
+    // IF DROPPED INSIDE BOX
+    // ==================================
+
+    if (insideBox)
+    {
+
+        dropBox.appendChild(image);
+
+        resetImagePosition();
+
+    }
+
+
+    // ==================================
+    // IF DROPPED OUTSIDE BOX
+    // ==================================
+
+    else
+    {
+
+        imageArea.appendChild(image);
+
+        resetImagePosition();
+
+    }
+
+});
+
+
+// ======================================
+// CANCEL DRAG
+// ======================================
+
+image.addEventListener("pointercancel", function()
+{
+
+    dragging = false;
+
+    dropBox.classList.remove("highlight");
+
+    imageArea.appendChild(image);
+
+    resetImagePosition();
+
+});
+
+
+// ======================================
+// RESET IMAGE POSITION
+// ======================================
+
+function resetImagePosition()
+{
+
+    image.style.position = "";
+
+    image.style.zIndex = "";
+
+    image.style.left = "";
+
+    image.style.top = "";
+
+    image.style.width = "150px";
+
 }
 
 
-// When dragging starts
-document.getElementById("drag-image").addEventListener(
-    "dragstart",
-    function(event)
-    {
-        event.dataTransfer.setData(
-            "text",
-            event.target.id
-        );
-    }
-);
+// ======================================
+// PREVENT NORMAL IMAGE DRAG
+// ======================================
 
-
-// When the picture is dropped
-function drop(event)
+image.addEventListener("dragstart", function(event)
 {
+
     event.preventDefault();
 
-    var imageId = event.dataTransfer.getData("text");
-
-    var image = document.getElementById(imageId);
-
-    event.currentTarget.appendChild(image);
-}
-
-
-// Allow dragging the picture OUT of the box
-document.getElementById("image-area").addEventListener(
-    "dragover",
-    function(event)
-    {
-        event.preventDefault();
-    }
-);
-
-
-document.getElementById("image-area").addEventListener(
-    "drop",
-    function(event)
-    {
-        event.preventDefault();
-
-        var imageId = event.dataTransfer.getData("text");
-
-        var image = document.getElementById(imageId);
-
-        event.currentTarget.appendChild(image);
-    }
-);
+});
 
 </script>
 
